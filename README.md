@@ -35,3 +35,5 @@ This Google Apps Script project is designed to manage customer purchases based o
 - Make sure to adjust sheet names, column references, and any specific logic as needed for your data structure.
 - Test the system with sample data to ensure proper functionality.
 - Monitor the script logs (View > Logs) for debugging and error checking.
+![CustomerDatabase on Google sheet](https://github.com/ntongho/Customer-loyalty-Reward-system/assets/36245733/039adff3-e03c-4986-9ef8-68dc8e7c8eef)
+![Code sheet](https://github.com/ntongho/Customer-loyalty-Reward-system/assets/36245733/d4a6c124-ee90-4f7c-adcf-3fe6ac57a3b6)
