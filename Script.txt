@@ -1,0 +1,72 @@
+function onEdit(e) {
+  var sheet = e.source.getActiveSheet();
+  var range = e.range;
+  var editedRow = range.getRow();
+  var editedCol = range.getColumn();
+  
+  if (editedCol == 1) { // Check if the edited cell is in column A
+    var scannedQR = range.getValue();
+    
+    // Extract customer code from scanned QR code
+    var customerCode = extractCustomerCode(scannedQR);
+    
+    if (customerCode !== "") {
+      // Check if customer code exists in the database
+      if (customerExists(customerCode)) {
+        // Increment purchase amount for the customer
+        incrementPurchaseAmount(customerCode);
+      } else {
+        SpreadsheetApp.getActiveSpreadsheet().toast("Customer code not found in the database.", "Error", 6);
+      }
+    } else {
+      SpreadsheetApp.getActiveSpreadsheet().toast("Invalid QR code format.", "Error", 6);
+    }
+  }
+}
+
+function extractCustomerCode(qrCode) {
+  // Extract customer code from QR code
+  // You need to implement logic to extract the customer code from the QR code
+  // This might involve parsing the QR code based on its format
+  // For simplicity, let's assume the customer code is the first 5 characters of the QR code
+  if (qrCode.length >= 6) {
+    return qrCode.substring(0, 6);
+  } else {
+    return "";
+  }
+}
+
+function customerExists(customerCode) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("CustomerDatabase"); // Change sheet name as needed
+  var dataRange = sheet.getDataRange();
+  var dataValues = dataRange.getValues();
+  
+  // Loop through the data to check if customer code exists
+  for (var i = 1; i < dataValues.length; i++) { // Assuming data starts from row 2
+    if (dataValues[i][0] == customerCode) { // Assuming customer code is in column A
+      return true;
+    }
+  }
+  
+  return false;
+}
+
+function incrementPurchaseAmount(customerCode) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("CustomerDatabase"); // Change sheet name as needed
+  var dataRange = sheet.getDataRange();
+  var dataValues = dataRange.getValues();
+  
+  // Find the row number where the customer code is located
+  for (var i = 1; i < dataValues.length; i++) { // Assuming data starts from row 2
+    if (dataValues[i][0] == customerCode) { // Assuming customer code is in column A
+      var purchaseAmount = dataValues[i][1]; // Assuming purchase amount is in column B
+      
+      // Increment the purchase amount
+      sheet.getRange(i + 1, 2).setValue(purchaseAmount === "" ? 1 : purchaseAmount + 1);
+      SpreadsheetApp.getActiveSpreadsheet().toast("Purchase amount incremented for customer with code " + customerCode, "Success", 6);
+      return;
+    }
+  }
+  
+  SpreadsheetApp.getActiveSpreadsheet().toast("Customer code not found in the database.", "Error", 6);
+}
